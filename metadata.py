@@ -1,15 +1,16 @@
 import fitz  # PyMuPDF
-import google.generativeai as genai
+from google import genai
 import json
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Configure Gemini
+# Initialize Gemini Client
 api_key = os.getenv("GOOGLE_API_KEY")
+client = None
 if api_key:
-    genai.configure(api_key=api_key)
+    client = genai.Client(api_key=api_key)
 
 def extract_text_from_pdf(file_path, max_pages=3):
     """Extracts text from the first few pages of a PDF."""
@@ -25,11 +26,9 @@ def extract_text_from_pdf(file_path, max_pages=3):
 
 def get_pdf_metadata(text):
     """Uses Gemini to extract year-month, party, and summary from text."""
-    if not text.strip():
+    if not text.strip() or client is None:
         return None
 
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    
     prompt = f"""
     Analyze the following text from a PDF document and extract metadata for renaming the file.
     The filename format must be: YYYY-MM - [Involved Party] - [Short Summary].pdf
@@ -47,7 +46,11 @@ def get_pdf_metadata(text):
     """
 
     try:
-        response = model.generate_content(prompt)
+        # Using gemini-1.5-flash as it is efficient for extraction
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
         # Clean the response in case LLM adds markdown blocks
         clean_response = response.text.strip().replace('```json', '').replace('```', '')
         return json.loads(clean_response)
