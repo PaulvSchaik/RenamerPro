@@ -1,3 +1,7 @@
+# Personal scripts
+renamer_paul.sh
+*.sh.local
+
 # Environments
 venv/
 .env
