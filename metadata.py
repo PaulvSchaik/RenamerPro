@@ -46,9 +46,9 @@ def get_pdf_metadata(text):
     """
 
     try:
-        # Using gemini-1.5-flash as it is efficient for extraction
+        # Using gemini-2.0-flash as it is the most current and robust model
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-2.0-flash',
             contents=prompt
         )
         # Clean the response in case LLM adds markdown blocks
