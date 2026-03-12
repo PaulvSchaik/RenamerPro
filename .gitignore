@@ -1,5 +1,5 @@
 # Personal scripts
-renamer_paul.sh
+renamer_paul*.sh
 *.sh.local
 
 # Environments
